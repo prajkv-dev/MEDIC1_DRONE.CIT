@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEDI-DRONE | Advanced Tracking</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#08111f;color:#eaf4ff;font-family:Arial,sans-serif}
+.sidebar{position:fixed;width:225px;height:100vh;background:#0d1a2b;padding:25px 17px;border-right:1px solid #263b52}
+.logo{font-size:21px;color:#35d5e8;font-weight:bold;margin-bottom:35px}
+.nav a{display:block;color:#9cb0c8;padding:14px;text-decoration:none;border-radius:8px;margin:5px 0}
+.nav a:hover,.nav a.active{background:#193149;color:#35d5e8}
+main{margin-left:225px;padding:28px}
+h1{margin:5px 0 10px}
+.muted{color:#91a5bd;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+.card{background:#122136;padding:18px;border:1px solid #263c53;border-radius:12px;margin-bottom:16px}
+.value{font-size:29px;font-weight:bold;margin:12px 0}
+.green{color:#44d99c}
+.yellow{color:#ffbf5b}
+.red{color:#ff6577}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+#map{height:490px;border-radius:10px;z-index:1}
+table{width:100%;border-collapse:collapse}
+td,th{padding:13px 9px;text-align:left;border-bottom:1px solid #2b3d52;font-size:12px}
+th{color:#8fa7c1}
+button{padding:10px 14px;border:0;border-radius:7px;background:#087f9b;color:white;cursor:pointer}
+a.route{color:#48d8e8}
+@media(max-width:850px){.sidebar{position:relative;width:100%;height:auto}.nav{display:flex;overflow:auto}.nav a{white-space:nowrap}main{margin:0;padding:17px}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}#map{height:350px}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+<div class="logo">✚ MEDI-DRONE</div>
+<nav class="nav">
+<a href="dashboard.html">▦ Dashboard</a>
+<a class="active" href="drone.html">◈ Drone Tracking</a>
+<a href="responder.html">✚ Responder Center</a>
+</nav>
+</aside>
+
+<main>
+<p class="muted">AERIAL INTELLIGENCE / FLEET TELEMETRY</p>
+<h1>Advanced Drone Tracking</h1>
+<p class="muted">Monitor aircraft positions, flight parameters and medical payload conditions.</p>
+
+<div class="grid">
+<div class="card"><small>Active Aircraft</small><div class="value green" id="active">02</div><small>In flight</small></div>
+<div class="card"><small>Fleet Battery Average</small><div class="value" id="battery">62%</div><small>Across 5 aircraft</small></div>
+<div class="card"><small>Payload Temperature</small><div class="value green" id="temperature">4.2°C</div><small>Selected demo sensor</small></div>
+<div class="card"><small>Emergency Missions</small><div class="value yellow">03</div><small>Registered demo missions</small></div>
+</div>
+
+<div class="two">
+<section class="card">
+<h3>Live Fleet GPS Map</h3>
+<div id="map"></div>
+<p class="muted">Simulated GPS locations. Not connected to actual aircraft.</p>
+<button onclick="refreshTelemetry()">↻ Refresh Telemetry</button>
+<a class="route" target="_blank" href="https://www.google.com/maps/@12.9716,77.5946,13z">Open Google Maps ↗</a>
+</section>
+
+<section class="card">
+<h3>Aircraft Monitoring</h3>
+<div id="aircraft"></div>
+</section>
+</div>
+
+<section class="card">
+<h3>Flight Telemetry Records</h3>
+<table>
+<thead><tr><th>Drone ID</th><th>Altitude</th><th>Speed</th><th>Battery</th><th>Payload °C</th><th>Status</th></tr></thead>
+<tbody id="records"></tbody>
+</table>
+</section>
+
+<section class="card">
+<h3>Mission Navigation</h3>
+<p class="muted">Select a destination to open its Google Maps directions.</p>
+<select id="destination" style="padding:12px;background:#0a1726;color:white;border:1px solid #31465c;border-radius:7px">
+<option>Victoria Hospital, Bengaluru</option>
+<option>St John's Medical College Hospital, Bengaluru</option>
+<option>Bowring Hospital, Bengaluru</option>
+<option>Command Hub, Bengaluru</option>
+</select>
+<button onclick="navigate()">Generate Route ↗</button>
+</section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const drones=[
+{id:"MD-01",lat:12.9718,lng:77.5948,battery:82,alt:92,speed:54,temp:4.2,status:"IN FLIGHT"},
+{id:"MD-02",lat:12.9352,lng:77.6245,battery:96,alt:0,speed:0,temp:5.1,status:"STANDBY"},
+{id:"MD-03",lat:12.9561,lng:77.5702,battery:43,alt:68,speed:42,temp:3.8,status:"RETURNING"},
+{id:"MD-04",lat:12.9850,lng:77.6050,battery:21,alt:0,speed:0,temp:22.4,status:"CHARGING"},
+{id:"MD-05",lat:12.9438,lng:77.5901,battery:67,alt:105,speed:61,temp:5.0,status:"IN FLIGHT"}
+];
+
+const map=L.map("map").setView([12.9716,77.5946],12);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+attribution:"© OpenStreetMap",maxZoom:19
+}).addTo(map);
+
+const markers={};
+drones.forEach(d=>{
+markers[d.id]=L.marker([d.lat,d.lng]).addTo(map)
+.bindPopup(`<b>${d.id}</b><br>${d.status}<br>Battery: ${d.battery}%`);
+});
+
+function render(){
+document.getElementById("aircraft").innerHTML=drones.map(d=>`
+<div style="padding:12px 0;border-bottom:1px solid #293d53">
+<b>${d.id}</b> <span style="float:right;color:${d.battery<30?'#ff6577':'#43d99b'}">${d.status}</span>
+<p class="muted">Battery ${d.battery}% · Altitude ${d.alt}m</p>
+<div style="height:6px;background:#263b51;border-radius:10px">
+<div style="width:${d.battery}%;height:6px;background:#32c5d7;border-radius:10px"></div>
+</div></div>`).join("");
+
+document.getElementById("records").innerHTML=drones.map(d=>`
+<tr><td>${d.id}</td><td>${d.alt} m</td><td>${d.speed} km/h</td>
+<td>${d.battery}%</td><td>${d.temp.toFixed(1)}°C</td><td>${d.status}</td></tr>`).join("");
+
+document.getElementById("active").textContent=drones.filter(d=>d.status==="IN FLIGHT").length;
+document.getElementById("battery").textContent=Math.round(drones.reduce((a,d)=>a+d.battery,0)/drones.length)+"%";
+document.getElementById("temperature").textContent=drones[0].temp.toFixed(1)+"°C";
+}
+
+function refreshTelemetry(){
+drones.forEach(d=>{
+if(d.status==="IN FLIGHT"||d.status==="RETURNING"){
+d.lat+=(Math.random()-.5)*.001;
+d.lng+=(Math.random()-.5)*.001;
+d.battery=Math.max(5,d.battery-.1);
+d.temp+=((Math.random()-.5)*.1);
+markers[d.id].setLatLng([d.lat,d.lng])
+.bindPopup(`<b>${d.id}</b><br>${d.status}<br>Battery ${d.battery.toFixed(1)}%`);
+}
+});
+render();
+}
+
+function navigate(){
+let destination=document.getElementById("destination").value;
+window.open("https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(destination),"_blank");
+}
+
+render();
+setInterval(refreshTelemetry,5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEDI-DRONE | Responder Center</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#08111f;color:#eaf4ff;font-family:Arial,sans-serif}
+.sidebar{position:fixed;width:225px;height:100vh;background:#0d1a2b;padding:25px 17px;border-right:1px solid #263b52}
+.logo{font-size:21px;color:#35d5e8;font-weight:bold;margin-bottom:35px}
+.nav a{display:block;color:#9cb0c8;padding:14px;text-decoration:none;border-radius:8px;margin:5px 0}
+.nav a:hover,.nav a.active{background:#193149;color:#35d5e8}
+main{margin-left:225px;padding:28px}
+h1{margin:5px 0 10px}
+.muted{color:#91a5bd;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:20px 0}
+.card{background:#122136;padding:20px;border:1px solid #263c53;border-radius:12px;margin-bottom:16px}
+.number{font-size:30px;font-weight:bold;margin:12px 0}
+.red{color:#ff6577}
+.green{color:#43d99b}
+form{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+label{font-size:12px;color:#9cb0c8}
+input,select,textarea{width:100%;padding:12px;background:#0a1726;border:1px solid #34475e;color:white;border-radius:7px;margin-top:7px}
+.full{grid-column:1/-1}
+button{padding:12px 16px;background:#087f9b;color:white;border:0;border-radius:7px;cursor:pointer}
+table{width:100%;border-collapse:collapse}
+td,th{text-align:left;padding:13px 9px;border-bottom:1px solid #293d52;font-size:12px}
+th{color:#8fa7c1}
+.notice{padding:15px;background:#351e28;border:1px solid #733443;border-radius:9px;color:#ffb6c0;line-height:1.6}
+@media(max-width:850px){.sidebar{position:relative;width:100%;height:auto}.nav{display:flex;overflow:auto}.nav a{white-space:nowrap}main{margin:0;padding:17px}.grid{grid-template-columns:1fr}form{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+<div class="logo">✚ MEDI-DRONE</div>
+<nav class="nav">
+<a href="dashboard.html">▦ Dashboard</a>
+<a href="drone.html">◈ Drone Tracking</a>
+<a class="active" href="responder.html">✚ Responder Center</a>
+</nav>
+</aside>
+
+<main>
+<p class="muted">MEDICAL EMERGENCY NETWORK / OPERATIONS</p>
+<h1>Responder Center</h1>
+<p class="muted">Hospital coordination, emergency requests and medical response management.</p>
+
+<div class="grid">
+<div class="card"><small class="muted">Registered Facilities</small><div class="number">04</div><span class="green">Network registered</span></div>
+<div class="card"><small class="muted">Available Responders</small><div class="number" id="available">03</div><span class="green">Available</span></div>
+<div class="card"><small class="muted">Emergency Response</small><div class="number red">112</div><span class="red">India emergency number</span></div>
+</div>
+
+<div class="notice">
+<b>Emergency alert:</b> For immediate life-threatening emergencies in India, call 112. This prototype cannot dispatch emergency services.
+</div>
+
+<section class="card" style="margin-top:18px">
+<h3>Register Medical Responder / Facility</h3>
+<form id="form">
+<div><label>Hospital / Responder Name</label><input name="name" required placeholder="Enter facility name"></div>
+<div><label>Facility Type</label><select name="type"><option>Hospital</option><option>Blood Bank</option><option>Trauma Centre</option><option>Emergency Team</option><option>Clinic</option></select></div>
+<div><label>Official Contact Number</label><input name="phone" required placeholder="+91"></div>
+<div><label>Location</label><input name="location" required placeholder="City / Area"></div>
+<div><label>Availability</label><select name="status"><option>Available</option><option>Busy</option><option>Offline</option></select></div>
+<div class="full"><button type="submit">＋ Register Responder</button></div>
+</form>
+</section>
+
+<section class="card">
+<h3>Hospital & Responder Directory</h3>
+<table>
+<thead><tr><th>Facility</th><th>Type</th><th>Contact</th><th>Location</th><th>Status</th><th>Map</th></tr></thead>
+<tbody id="directory">
+<tr><td>Victoria Hospital</td><td>Government Hospital</td><td>+91 80 2670 1150</td><td>Bengaluru</td><td class="green">Available</td><td><a href="https://www.google.com/maps/search/?api=1&query=Victoria+Hospital+Bengaluru" target="_blank">Locate ↗</a></td></tr>
+<tr><td>St John's Medical College Hospital</td><td>Trauma Centre</td><td>+91 80 4946 6000</td><td>Bengaluru</td><td class="green">Available</td><td><a href="https://www.google.com/maps/search/?api=1&query=St+Johns+Hospital+Bengaluru" target="_blank">Locate ↗</a></td></tr>
+<tr><td>Bowring Hospital</td><td>Government Hospital</td><td>+91 80 2559 1355</td><td>Bengaluru</td><td class="red">Busy</td><td><a href="https://www.google.com/maps/search/?api=1&query=Bowring+Hospital+Bengaluru" target="_blank">Locate ↗</a></td></tr>
+<tr><td>Central Blood Bank</td><td>Blood Bank</td><td>Verify official contact</td><td>Bengaluru</td><td class="green">Available</td><td><a href="https://www.google.com/maps/search/?api=1&query=Blood+Bank+Bengaluru" target="_blank">Locate ↗</a></td></tr>
+</tbody>
+</table>
+</section>
+
+<section class="card">
+<h3>Emergency Response Workflow</h3>
+<ol style="line-height:2;color:#b9cadb">
+<li>Receive and validate emergency request.</li>
+<li>Confirm medical payload with authorized healthcare staff.</li>
+<li>Check drone availability, weather and approved flight route.</li>
+<li>Assign authorized responder and delivery location.</li>
+<li>Verify package handover and temperature records.</li>
+</ol>
+</section>
+</main>
+
+<script>
+const form=document.getElementById("form");
+form.addEventListener("submit",function(e){
+e.preventDefault();
+const data=new FormData(form);
+const name=data.get("name");
+const type=data.get("type");
+const phone=data.get("phone");
+const location=data.get("location");
+const status=data.get("status");
+
+const row=document.createElement("tr");
+[name,type,phone,location,status].forEach((value,index)=>{
+const td=document.createElement("td");
+td.textContent=value;
+if(index===4)td.className=status==="Available"?"green":status==="Busy"?"red":"";
+row.appendChild(td);
+});
+
+const map=document.createElement("td");
+const link=document.createElement("a");
+link.href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(name+" "+location);
+link.target="_blank";
+link.rel="noopener";
+link.textContent="Locate ↗";
+map.appendChild(link);
+row.appendChild(map);
+document.getElementById("directory").appendChild(row);
+
+document.getElementById("available").textContent=
+document.querySelectorAll("#directory tr .green").length;
+
+form.reset();
+alert("Responder registered successfully in this browser session!");
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEDI-DRONE | Emergency Medical Response Network</title>
+  <meta name="description" content="MEDI-DRONE connects emergency medical services with intelligent drone logistics for faster medical response.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07111d;
+      --panel: #101e2d;
+      --panel-light: #152638;
+      --text: #edf5fb;
+      --muted: #91a4b7;
+      --cyan: #32d6d0;
+      --green: #54e0a0;
+      --line: rgba(255,255,255,.09);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1160px, 92%);
+      margin: auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(7,17,29,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    nav {
+      min-height: 76px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.7px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      color: #07111d;
+      background: var(--cyan);
+      font-size: 23px;
+    }
+
+    .brand span { color: var(--cyan); }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .nav-links a:hover { color: var(--cyan); }
+
+    .nav-cta, .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 18px;
+      border-radius: 9px;
+      background: var(--cyan);
+      color: #06151c;
+      font-weight: 700;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .nav-cta:hover, .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(50,214,208,.2);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,.2);
+      color: var(--text);
+    }
+
+    .hero {
+      padding: 95px 0 75px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: rgba(35,190,190,.09);
+      filter: blur(100px);
+      right: -100px;
+      top: -100px;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 55px;
+      position: relative;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--cyan);
+      border: 1px solid rgba(50,214,208,.25);
+      background: rgba(50,214,208,.07);
+      padding: 8px 13px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      margin-bottom: 24px;
+    }
+
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px var(--green);
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(42px, 6vw, 69px);
+      line-height: 1.07;
+      letter-spacing: -2.8px;
+      margin-bottom: 23px;
+    }
+
+    h1 span { color: var(--cyan); }
+
+    .hero-copy {
+      color: var(--muted);
+      max-width: 540px;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 13px;
+    }
+
+    .hero-visual {
+      min-height: 390px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(50,214,208,.17), transparent 45%),
+        linear-gradient(145deg, #14283a, #0b1725);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grid-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: .2;
+      background-image:
+        linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 35px 35px;
+    }
+
+    .drone-art {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .drone-art .emoji {
+      font-size: 125px;
+      filter: drop-shadow(0 0 28px rgba(50,214,208,.35));
+    }
+
+    .drone-art h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 21px;
+      margin-top: 10px;
+    }
+
+    .drone-art p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .float-card {
+      position: absolute;
+      z-index: 2;
+      background: rgba(10,25,38,.92);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 15px;
+      box-shadow: 0 12px 35px rgba(0,0,0,.25);
+      font-size: 11px;
+    }
+
+    .float-card strong {
+      display: block;
+      font-size: 15px;
+      margin-top: 3px;
+    }
+
+    .float-one { top: 25px; left: 22px; }
+    .float-two { bottom: 25px; right: 22px; }
+
+    .float-card small { color: var(--muted); }
+
+    .section { padding: 65px 0; }
+
+    .section-heading {
+      text-align: center;
+      max-width: 650px;
+      margin: 0 auto 35px;
+    }
+
+    .section-heading .eyebrow { margin-bottom: 13px; }
+
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 39px);
+      letter-spacing: -1.2px;
+      margin-bottom: 12px;
+    }
+
+    .section-heading p { color: var(--muted); font-size: 14px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .stat-card, .feature-card, .portal-card, .step {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 22px;
+    }
+
+    .stat-card small { color: var(--muted); font-size: 12px; }
+    .stat-card strong {
+      display: block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 29px;
+      margin: 8px 0 3px;
+    }
+
+    .stat-card span { color: var(--green); font-size: 11px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
+    }
+
+    .feature-card { transition: .2s; }
+    .feature-card:hover, .portal-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(50,214,208,.4);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(50,214,208,.1);
+      font-size: 23px;
+      margin-bottom: 17px;
+    }
+
+    .feature-card h3, .portal-card h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      margin-bottom: 9px;
+    }
+
+    .feature-card p, .portal-card p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .portals {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 17px;
+    }
+
+    .portal-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 225px;
+    }
+
+    .portal-card .feature-icon { margin-bottom: 13px; }
+    .portal-card p { margin-bottom: 20px; }
+    .portal-card a {
+      margin-top: auto;
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .portal-card a:hover { text-decoration: underline; }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .step-number {
+      color: var(--cyan);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .step h3 { font-size: 15px; margin-bottom: 7px; }
+    .step p { color: var(--muted); font-size: 12px; }
+
+    .emergency {
+      padding: 35px;
+      border-radius: 18px;
+      background: linear-gradient(110deg, #123b45, #102637);
+      border: 1px solid rgba(50,214,208,.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .emergency p { color: #b4c9d4; font-size: 13px; margin-top: 7px; }
+
+    .emergency-number {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 35px;
+      font-weight: 700;
+      color: var(--cyan);
+      white-space: nowrap;
+    }
+
+    .emergency-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 25px 0;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 60px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    @media(max-width: 850px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 330px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .feature-grid, .portals { grid-template-columns: repeat(2, 1fr); }
+      .workflow { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { gap: 12px; }
+    }
+
+    @media(max-width: 560px) {
+      nav { padding: 13px 0; align-items: flex-start; }
+      .nav-links { display: none; }
+      .brand { font-size: 19px; }
+      .nav-cta { padding: 10px 12px; font-size: 11px; }
+      .hero { padding: 65px 0 45px; }
+      .stats, .feature-grid, .portals, .workflow { grid-template-columns: 1fr; }
+      .emergency { flex-direction: column; align-items: flex-start; }
+      .emergency-number { font-size: 29px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="brand">
+        <div class="brand-icon">✚</div>
+        MEDI<span>DRONE</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="emergency.html">Emergency</a>
+        <a href="register.html">Register / My Profile</a>
+        <a href="#features">Features</a>
+        <a href="#workflow">How It Works</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="drone.html">Drone Tracking</a>
+        <a href="responder.html">Responders</a>
+      </div>
+
+      <a class="nav-cta" href="emergency.html">Request Assistance ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span> INTELLIGENT MEDICAL RESPONSE NETWORK</div>
+
+        <h1>Saving Lives.<br>One <span>Flight</span><br>At A Time.</h1>
+
+        <p class="hero-copy">
+          MEDI-DRONE is an intelligent emergency medical logistics platform
+          designed to connect healthcare facilities, responders and autonomous
+          drone technology for faster delivery of critical medical supplies.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="emergency.html">Request Emergency Assistance ↗</a>
+          <a class="btn btn-outline" href="dashboard.html">Explore Dashboard →</a>
+          <a class="btn btn-outline" href="drone.html">Track Drone →</a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="grid-pattern"></div>
+
+        <div class="float-card float-one">
+          <small>NETWORK STATUS</small>
+          <strong style="color:var(--green)">● Operational</strong>
+        </div>
+
+        <div class="drone-art">
+          <div class="emoji">🚁</div>
+          <h3>MEDICAL AERIAL LOGISTICS</h3>
+          <p>Connecting critical supplies to communities</p>
+        </div>
+
+        <div class="float-card float-two">
+          <small>RESPONSE SYSTEM</small>
+          <strong style="color:var(--cyan)">Prototype Demo</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">PLATFORM OVERVIEW</div>
+        <h2>Emergency Response At A Glance</h2>
+        <p>Explore the demonstration network and its connected operational modules.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <small>Demo Drone Fleet</small>
+          <strong>05</strong>
+          <span>Sample fleet records</span>
+        </div>
+
+        <div class="stat-card">
+          <small>Medical Hubs</small>
+          <strong>03</strong>
+          <span>Sample hub records</span>
+        </div>
+
+        <div class="stat-card">
+          <small>Responder Network</small>
+          <strong>03</strong>
+          <span>Sample responder records</span>
+        </div>
+
+        <div class="stat-card">
+          <small>Emergency Number</small>
+          <strong>112</strong>
+          <span>India emergency helpline</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">CORE CAPABILITIES</div>
+        <h2>Technology With A Purpose</h2>
+        <p>Bringing intelligent logistics, medical inventory and emergency coordination together.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🛰️</div>
+          <h3>Intelligent Drone Tracking</h3>
+          <p>Visualize drone locations, flight details, battery status, altitude and mission information.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💊</div>
+          <h3>Medical Inventory</h3>
+          <p>Monitor essential medicines, medical kits and available emergency supplies.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🏥</div>
+          <h3>Responder Network</h3>
+          <p>Connect hospitals, medical hubs and emergency response personnel.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🌡️</div>
+          <h3>Cold-Chain Monitoring</h3>
+          <p>Track payload temperature to help protect temperature-sensitive medical supplies.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h3>Route Visualization</h3>
+          <p>View map-based locations and explore navigation links for planned missions.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Emergency Coordination</h3>
+          <p>Bring mission information and responder details into one operational interface.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="workflow">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">MISSION WORKFLOW</div>
+        <h2>From Emergency To Delivery</h2>
+        <p>A conceptual workflow for coordinated medical drone response.</p>
+      </div>
+
+      <div class="workflow">
+        <div class="step">
+          <div class="step-number">01</div>
+          <h3>Emergency Request</h3>
+          <p>A medical supply requirement is identified and recorded.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">02</div>
+          <h3>Mission Coordination</h3>
+          <p>Available medical supplies, hubs and response resources are reviewed.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">03</div>
+          <h3>Drone Dispatch</h3>
+          <p>A suitable drone and mission route are selected for the demonstration workflow.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">04</div>
+          <h3>Delivery & Monitoring</h3>
+          <p>Mission progress and payload conditions are monitored through the platform.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-heading">
+        <div class="eyebrow">CONTROL CENTER</div>
+        <h2>Access Your Modules</h2>
+        <p>Navigate directly to the operational pages of MEDI-DRONE.</p>
+      </div>
+
+      <div class="portals">
+        <div class="portal-card">
+          <div class="feature-icon">🚨</div>
+          <h3>Emergency Assistance</h3>
+          <p>Submit a simulated emergency request, load registered profile details and capture current GPS location.</p>
+          <a href="emergency.html">Open Emergency Form →</a>
+        </div>
+
+        <div class="portal-card">
+          <div class="feature-icon">📝</div>
+          <h3>Patient Registration</h3>
+          <p>Register patient details and save medical information for use in the prototype.</p>
+          <a href="register.html">Register / My Profile →</a>
+        </div>
+
+        <div class="portal-card">
+          <div class="feature-icon">📊</div>
+          <h3>Command Dashboard</h3>
+          <p>View system overview, demo fleet statistics, medicine stock charts and mission activity.</p>
+          <a href="dashboard.html">Open Dashboard →</a>
+        </div>
+
+        <div class="portal-card">
+          <div class="feature-icon">🚁</div>
+          <h3>Drone Tracking Center</h3>
+          <p>Explore the interactive drone map, sample GPS positions, battery levels and payload information.</p>
+          <a href="drone.html">Track Drones →</a>
+        </div>
+
+        <div class="portal-card">
+          <div class="feature-icon">🏥</div>
+          <h3>Responder Center</h3>
+          <p>Explore the hospital directory, responder information and registration interface.</p>
+          <a href="responder.html">Open Responder Center →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="emergency">
+    <div class="container">
+      <div class="emergency">
+        <div>
+          <h2>Emergency? Every Second Matters.</h2>
+          <p>For real emergencies in India, call 112 directly. The MEDI-DRONE form is only a hackathon prototype.</p>
+
+          <div class="emergency-actions">
+            <a class="btn" href="emergency.html">Open Emergency Form ↗</a>
+            <a class="btn btn-outline" href="tel:112">Call 112</a>
+          </div>
+        </div>
+
+        <div class="emergency-number">112</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div>© 2026 MEDI-DRONE | Intelligent Medical Response Network</div>
+    <div>Designed for innovation in emergency healthcare logistics</div>
+  </div>
+</footer>
+
+</body>
+</html>

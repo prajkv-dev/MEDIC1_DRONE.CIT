@@ -1,0 +1,537 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEDI-DRONE | Command Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --bg:#07111d;
+  --panel:#101e2d;
+  --panel2:#152638;
+  --text:#edf5fb;
+  --muted:#91a4b7;
+  --cyan:#32d6d0;
+  --green:#54e0a0;
+  --red:#ff7373;
+  --line:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+}
+a{text-decoration:none;color:inherit}
+.container{width:min(1250px,94%);margin:auto}
+
+/* NAVIGATION */
+header{
+  background:#0b1826;
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+nav{
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+.brand{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:21px;
+  font-weight:700;
+}
+.brand span{color:var(--cyan)}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:22px;
+  flex-wrap:wrap;
+}
+.nav-links a{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:600;
+}
+.nav-links a:hover{color:var(--cyan)}
+.home-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:var(--cyan);
+  color:#07111d!important;
+  padding:10px 15px;
+  border-radius:8px;
+  font-weight:700!important;
+  transition:.2s;
+}
+.home-btn:hover{
+  background:#76efdf;
+  transform:translateY(-2px);
+}
+
+/* MAIN */
+main{padding:35px 0 60px}
+.page-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+  margin-bottom:28px;
+}
+.page-heading h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:32px;
+}
+.page-heading p{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+}
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 13px;
+  background:rgba(84,224,160,.09);
+  border:1px solid rgba(84,224,160,.2);
+  color:var(--green);
+  border-radius:30px;
+  font-size:12px;
+}
+.dot{
+  height:7px;width:7px;
+  border-radius:50%;
+  background:var(--green);
+}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:22px;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:21px;
+}
+.stat-label{color:var(--muted);font-size:12px}
+.stat-value{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:32px;
+  font-weight:700;
+  margin:10px 0 5px;
+}
+.stat-note{font-size:11px;color:var(--green)}
+
+/* CONTENT GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:17px;
+  margin-bottom:18px;
+}
+.card-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:20px;
+}
+.card-title h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:17px;
+}
+.card-title small{color:var(--muted);font-size:11px}
+.chart-box{height:260px;position:relative}
+
+/* MAP */
+.map-frame{
+  width:100%;
+  height:260px;
+  border:0;
+  border-radius:10px;
+  background:#152638;
+}
+.map-caption{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:10px;
+}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:570px;
+}
+th,td{
+  text-align:left;
+  padding:13px 12px;
+  border-bottom:1px solid var(--line);
+  font-size:12px;
+}
+th{color:var(--muted);font-weight:600}
+td{color:#dce7ef}
+.pill{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:10px;
+}
+.available{background:rgba(84,224,160,.1);color:var(--green)}
+.mission{background:rgba(50,214,208,.1);color:var(--cyan)}
+.warning{background:rgba(255,180,80,.1);color:#ffbd69}
+
+/* ACTIVITY */
+.activity{
+  display:flex;
+  gap:12px;
+  padding:13px 0;
+  border-bottom:1px solid var(--line);
+}
+.activity:last-child{border:0}
+.activity-icon{
+  height:34px;width:34px;
+  display:grid;
+  place-items:center;
+  background:var(--panel2);
+  border-radius:9px;
+  flex-shrink:0;
+}
+.activity strong{font-size:12px}
+.activity p{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--line);
+  padding:22px 0;
+  color:var(--muted);
+  font-size:11px;
+  text-align:center;
+}
+
+@media(max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  nav{padding:14px 0;align-items:flex-start}
+  .nav-links{gap:12px}
+  .nav-links a{font-size:11px}
+  .home-btn{padding:8px 10px}
+  .page-heading h1{font-size:25px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat-value{font-size:25px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <nav>
+      <a href="index.html" class="brand">
+        MEDI<span>DRONE</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="index.html" class="home-btn">← Return to Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="drone.html">Drone Tracking</a>
+        <a href="responder.html">Responders</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="page-heading">
+    <div>
+      <h1>Command Dashboard</h1>
+      <p>MEDI-DRONE Emergency Medical Logistics Control Center</p>
+    </div>
+    <div class="status">
+      <span class="dot"></span>
+      DEMO SYSTEM ONLINE
+    </div>
+  </div>
+
+  <!-- STATISTICS -->
+  <section class="stats">
+    <div class="card">
+      <div class="stat-label">Total Drone Fleet</div>
+      <div class="stat-value">05</div>
+      <div class="stat-note">Sample fleet records</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-label">Medical Hubs</div>
+      <div class="stat-value">03</div>
+      <div class="stat-note">Sample hub records</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-label">Registered Responders</div>
+      <div class="stat-value">03</div>
+      <div class="stat-note">Sample responder records</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-label">Active Missions</div>
+      <div class="stat-value">02</div>
+      <div class="stat-note">Illustrative mission count</div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section class="grid">
+
+    <div class="card">
+      <div class="card-title">
+        <h2>Medical Inventory Analytics</h2>
+        <small>Demo stock quantities</small>
+      </div>
+      <div class="chart-box">
+        <canvas id="medicineChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <h2>Drone Fleet Status</h2>
+        <small>Demo fleet distribution</small>
+      </div>
+      <div class="chart-box">
+        <canvas id="fleetChart"></canvas>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- MAP AND ACTIVITY -->
+  <section class="grid">
+
+    <div class="card">
+      <div class="card-title">
+        <h2>Medical Network Map</h2>
+        <small>Illustrative Bengaluru map</small>
+      </div>
+
+      <iframe
+        class="map-frame"
+        title="Bengaluru medical network map"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=77.50%2C12.88%2C77.75%2C13.10&layer=mapnik">
+      </iframe>
+
+      <p class="map-caption">
+        Map view for geographic context. It does not show verified live drone positions.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <h2>Mission Activity</h2>
+        <small>Demo activity feed</small>
+      </div>
+
+      <div class="activity">
+        <div class="activity-icon">🚁</div>
+        <div>
+          <strong>Drone MD-001 mission prepared</strong>
+          <p>Sample mission record · 10:30 AM</p>
+        </div>
+      </div>
+
+      <div class="activity">
+        <div class="activity-icon">💊</div>
+        <div>
+          <strong>Medical inventory reviewed</strong>
+          <p>Sample stock record · 10:15 AM</p>
+        </div>
+      </div>
+
+      <div class="activity">
+        <div class="activity-icon">🏥</div>
+        <div>
+          <strong>Medical hub information updated</strong>
+          <p>Sample hub record · 09:50 AM</p>
+        </div>
+      </div>
+
+      <div class="activity">
+        <div class="activity-icon">📡</div>
+        <div>
+          <strong>Fleet status checked</strong>
+          <p>Sample system activity · 09:30 AM</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- DRONE TABLE -->
+  <section class="card">
+    <div class="card-title">
+      <h2>Drone Fleet Overview</h2>
+      <small>Illustrative records</small>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Drone ID</th>
+            <th>Battery</th>
+            <th>Altitude</th>
+            <th>Payload</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>MD-001</td>
+            <td>94%</td>
+            <td>120 m</td>
+            <td>Medical Kit</td>
+            <td><span class="pill mission">On Mission</span></td>
+          </tr>
+
+          <tr>
+            <td>MD-002</td>
+            <td>88%</td>
+            <td>0 m</td>
+            <td>Blood Sample</td>
+            <td><span class="pill available">Available</span></td>
+          </tr>
+
+          <tr>
+            <td>MD-003</td>
+            <td>65%</td>
+            <td>0 m</td>
+            <td>Medicine Pack</td>
+            <td><span class="pill available">Available</span></td>
+          </tr>
+
+          <tr>
+            <td>MD-004</td>
+            <td>31%</td>
+            <td>0 m</td>
+            <td>Medical Kit</td>
+            <td><span class="pill warning">Low Battery</span></td>
+          </tr>
+
+          <tr>
+            <td>MD-005</td>
+            <td>79%</td>
+            <td>80 m</td>
+            <td>Emergency Pack</td>
+            <td><span class="pill mission">On Mission</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    MEDI-DRONE © 2026 | Intelligent Medical Emergency Response Network
+    <br><br>
+    Prototype dashboard — displayed information is illustrative, not operational telemetry.
+  </div>
+</footer>
+
+<script>
+/* MEDICINE STOCK CHART */
+const medicineCanvas = document.getElementById('medicineChart');
+
+new Chart(medicineCanvas, {
+  type: 'bar',
+  data: {
+    labels: ['First Aid', 'Blood Units', 'Vaccines', 'Medicines', 'Oxygen Kits'],
+    datasets: [{
+      label: 'Available Stock',
+      data: [85, 42, 65, 90, 35],
+      backgroundColor: [
+        '#32d6d0',
+        '#54e0a0',
+        '#62a9e8',
+        '#b28bea',
+        '#ffbd69'
+      ],
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: { color: '#91a4b7' }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#91a4b7' },
+        grid: { display: false }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: { color: '#91a4b7' },
+        grid: { color: 'rgba(255,255,255,.07)' }
+      }
+    }
+  }
+});
+
+/* DRONE STATUS CHART */
+const fleetCanvas = document.getElementById('fleetChart');
+
+new Chart(fleetCanvas, {
+  type: 'doughnut',
+  data: {
+    labels: ['Available', 'On Mission', 'Maintenance'],
+    datasets: [{
+      data: [2, 2, 1],
+      backgroundColor: ['#54e0a0', '#32d6d0', '#ffbd69'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#91a4b7',
+          padding: 18
+        }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
